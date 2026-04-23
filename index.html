@@ -13,6 +13,22 @@
             padding: 20px;
             background: #f0f0f0;
         }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+              input {
+            padding: 10px;
+            font-size: 16px;
+            width: 300px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+        }
 
         #result {
             background: white;
@@ -25,38 +41,60 @@
 
 <body>
     <h1>🌤️ My First Weather App</h1>
-    <button onclick="getWeather()">Get London Weather</button>
+    <input type="text" id="cityName" placeholder="Enter The City Name">
+    <button onclick="getWeather()">Get Weather</button>
+    
 
     <div id="result">Click the button to fetch weather!</div>
 
     <script>
-        // Step 1: Define your API key (get free key from openweathermap.org)
-        const API_KEY = 'dc15259a400f1c15ac8d139afd09f03a';
-
-        // Step 2: Create the function that fetches weather
+        
         function getWeather() {
-            // This is the URL we'll ask for data
-            const url = `https://api.openweathermap.org/data/2.5/weather?q=London&appid=${API_KEY}&units=metric`;
+            const API_KEY = 'dc15259a400f1c15ac8d139afd09f03a';
+            const cityInput = document.getElementById('cityName')
+            const cityName = cityInput.value;
 
-            // Step 3: Fetch data from the API
+            if (cityName === '') {
+                alert('Please Enter a City Name!');
+                return;
+            }
+            const url = `https://api.openweathermap.org/data/2.5/weather?q=${cityName}&appid=${API_KEY}&units=metric`;
+
+            //While Wait
+            document.getElementById('result').innerHTML= '<p>Loading....</p>'
+
+            // Fetch The Data
             fetch(url)
-                .then(response => response.json())  // Convert response to JSON
+                .then(response => response.json()) 
                 .then(data => {
-                    // Step 4: Display the data
-                    console.log(data);  // See full data in browser console (F12)
+                    console.log(data); 
 
                     document.getElementById('result').innerHTML = `
-                        <h2>Weather in ${data.name}</h2>
-                        <p>Temperature: ${data.main.temp}°C</p>
-                        <p>Condition: ${data.weather[0].description}</p>
+                        <h2>📍 ${data.name}, ${data.sys.country}</h2>
+                        <h1>🌡️ ${Math.round(data.main.temp)}°C</h1>
+                        <p><strong>Feels like:</strong> ${Math.round(data.main.feels_like)}°C</p>
+                        <p><strong>Condition:</strong> ${data.weather[0].description}</p>
+                        <p><strong>Humidity:</strong> ${data.main.humidity}%</p>
+                        <p><strong>Wind Speed:</strong> ${data.wind.speed} m/s</p>
+                        <p><strong>Pressure:</strong> ${data.main.pressure}           </p>
                     `;
                 })
                 .catch(error => {
                     // If something goes wrong
                     document.getElementById('result').innerHTML =
-                        `<p style="color: red;">Error: ${error.message}</p>`;
+                        `<p style="color: red;">Error: ${error.message}</p>
+                        <p>Please Try The City Name Again.</p>
+                        `;
                 });
+
+
         }
+        document.getElementById('cityName').addEventListener('keypress',function(event){
+            console.log(event.key);
+            if (event.key==='Enter'){
+                getWeather()
+            }
+        });
     </script>
 </body>
 
