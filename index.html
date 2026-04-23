@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Step 1: First API Call</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f0f0f0;
+        }
+
+        #result {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>🌤️ My First Weather App</h1>
+    <button onclick="getWeather()">Get London Weather</button>
+
+    <div id="result">Click the button to fetch weather!</div>
+
+    <script>
+        // Step 1: Define your API key (get free key from openweathermap.org)
+        const API_KEY = 'dc15259a400f1c15ac8d139afd09f03a';
+
+        // Step 2: Create the function that fetches weather
+        function getWeather() {
+            // This is the URL we'll ask for data
+            const url = `https://api.openweathermap.org/data/2.5/weather?q=London&appid=${API_KEY}&units=metric`;
+
+            // Step 3: Fetch data from the API
+            fetch(url)
+                .then(response => response.json())  // Convert response to JSON
+                .then(data => {
+                    // Step 4: Display the data
+                    console.log(data);  // See full data in browser console (F12)
+
+                    document.getElementById('result').innerHTML = `
+                        <h2>Weather in ${data.name}</h2>
+                        <p>Temperature: ${data.main.temp}°C</p>
+                        <p>Condition: ${data.weather[0].description}</p>
+                    `;
+                })
+                .catch(error => {
+                    // If something goes wrong
+                    document.getElementById('result').innerHTML =
+                        `<p style="color: red;">Error: ${error.message}</p>`;
+                });
+        }
+    </script>
+</body>
+
+</html>
